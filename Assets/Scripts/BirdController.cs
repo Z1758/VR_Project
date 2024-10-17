@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class BirdController : MonoBehaviour
@@ -15,14 +16,19 @@ public class BirdController : MonoBehaviour
     [SerializeField] float minRange;
     Coroutine co;
 
+    [SerializeField] public ActionBasedController input;
+
+    [SerializeField] InputActionReference fbRef;
+    [SerializeField] InputActionAsset fbAsset;
+
     public void MoveTarget()
     {
-      
+
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, mask))
         {
-            
-           target.position = hit.point;
+
+            target.position = hit.point;
         }
 
     }
@@ -30,14 +36,28 @@ public class BirdController : MonoBehaviour
     private void Update()
     {
         MoveTarget();
-    
+
+      
     }
 
-
-    public void FrontBack(InputAction.CallbackContext value)
+    private void OnEnable()
     {
-        if (value.started)
-        {
+        fbAsset.Enable();
+        fbRef.action.performed += FrontBack;
+        fbRef.action.canceled += FrontBackCancle;
+    }
+
+    private void OnDisable()
+    {
+        fbAsset.Disable();
+        fbRef.action.performed -= FrontBack;
+        fbRef.action.canceled -= FrontBackCancle;
+    }
+
+    void FrontBack(InputAction.CallbackContext value)
+    {
+       
+          
             if (value.ReadValue<Vector2>().y > 0.1f)
             {
                 StopAllCoroutines();
@@ -51,16 +71,16 @@ public class BirdController : MonoBehaviour
                 co = StartCoroutine(FrontCoroutine());
             }
 
-        }
+        
 
-        if (value.canceled)
-        {
-            StopAllCoroutines();
-        }
-
-     
+       
+    }
+    void FrontBackCancle(InputAction.CallbackContext value)
+    {
+        StopAllCoroutines();
     }
 
+  
     IEnumerator FrontCoroutine()
     {
         while (true)
