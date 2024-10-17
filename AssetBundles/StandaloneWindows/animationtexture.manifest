@@ -1,0 +1,26 @@
+ManifestFileVersion: 0
+CRC: 1085738796
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d0855bc684915d0127cb8ba938bbe982
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5ad585dd02dfb5016c0dad519eab8f49
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: d0855bc684915d0127cb8ba938bbe982
+HashAppended: 0
+ClassTypes:
+- Class: 49
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AnimationTexture/sparrow.bytes
+- Assets/AnimationTexture/lb_blueJay.bytes
+- Assets/AnimationTexture/goldFinch.bytes
+- Assets/AnimationTexture/crow.bytes
+- Assets/AnimationTexture/robin.bytes
+- Assets/AnimationTexture/chickadee.bytes
+- Assets/AnimationTexture/cardinal.bytes
+Dependencies: []
