@@ -8,7 +8,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class BirdController : MonoBehaviour
 {
     [SerializeField] Transform target;
-    [SerializeField] LayerMask mask;
+    [SerializeField] LayerMask wallMask;
+    [SerializeField] LayerMask enemyMask;
     [SerializeField] Transform wall;
     [SerializeField] WaitForSeconds wfs = new WaitForSeconds (0.07f);
 
@@ -25,10 +26,17 @@ public class BirdController : MonoBehaviour
     {
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, mask))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, enemyMask))
+        {
+
+            target.position = hit.transform.position;
+            return;
+        }
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, wallMask))
         {
 
             target.position = hit.point;
+           
         }
 
     }

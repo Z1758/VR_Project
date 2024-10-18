@@ -10,6 +10,8 @@ public class BirdStat : MonoBehaviour
 
     public float SPEED { get { return speed; } }
 
+    public WaitForSeconds wfs;
+
     public static BirdStat Instance
     {
         get
@@ -29,6 +31,8 @@ public class BirdStat : MonoBehaviour
         {
             Destroy(this);
         }
+
+        wfs = new WaitForSeconds(0.05f);
 
     }
 }

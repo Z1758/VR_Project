@@ -1,6 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEngine;
+
+using UnityEngine.Jobs;
+
+
 
 public class Boids : MonoBehaviour
 {
@@ -18,17 +25,16 @@ public class Boids : MonoBehaviour
 
     Vector3 resultVector;
 
-    WaitForSeconds wfs;
-
   
+
     private void Awake()
     {
-     
+
         cBoids = new List<Boids>();
         sBoids = new List<Boids>();
         aBoids = new List<Boids>();
 
-        wfs = new WaitForSeconds(Random.Range(0.02f, 0.1f));
+       
     }
 
 
@@ -37,40 +43,58 @@ public class Boids : MonoBehaviour
         cBoids.Clear();
         sBoids.Clear();
         aBoids.Clear();
+      
 
+        
         for (int i = 0; i < SpawnBirds.Instance.allBoids.Count; i++)
         {
             Boids bird = SpawnBirds.Instance.allBoids[i];
+            int cnt = 0;
             if (bird != this)
             {
              
                 float currentNeighbourDistanceSqr = Vector3.SqrMagnitude(bird.transform.position - transform.position);
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.cDistance * SpawnBirds.Instance.cDistance)
                 {
-                    if (cBoids.Count < 5)
+                    if (cBoids.Count < 3)
                     {
 
                         cBoids.Add(bird);
                     }
+                    else
+                    {
+                        cnt++;
+                    }
                 }
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.sDistance * SpawnBirds.Instance.sDistance)
                 {
-                    if (sBoids.Count < 5)
+                    if (sBoids.Count < 3)
                     {
 
                         sBoids.Add(bird);
                     }
+                    else
+                    {
+                        cnt++;
+                    }
                 }
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.aDistance * SpawnBirds.Instance.aDistance)
                 {
-                    if (aBoids.Count < 5)
+                    if (aBoids.Count < 3)
                     {
 
                         aBoids.Add(bird);
                     }
+                    else
+                    {
+                        cnt++;
+                    }
                 }
             }
+            if (cnt >= 3)
+                break;
         }
+     
     }
 
     private void Update()
@@ -105,7 +129,7 @@ public class Boids : MonoBehaviour
 
     private void Start()
     {
-     
+
         StartCoroutine(Cal());
     }
 
@@ -113,7 +137,7 @@ public class Boids : MonoBehaviour
     {
         while (true)
         {
-            yield return wfs;
+            yield return BirdStat.Instance.wfs;
             CalDistance();
 
         }
@@ -209,7 +233,7 @@ public class Boids : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 2f, mask))
         {
-          
+
             Debug.DrawLine(transform.position, hit.point, Color.black);
             obstacleVec = hit.normal;
         }
@@ -220,7 +244,7 @@ public class Boids : MonoBehaviour
     {
         hp--;
 
-        if(hp <= 0)
+        if (hp <= 0)
         {
             Die();
         }
@@ -232,4 +256,14 @@ public class Boids : MonoBehaviour
         StopAllCoroutines();
         gameObject.SetActive(false);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out Enemy enemy))
+        {
+            enemy.TakeDamage(1);
+        }
+    }
+
+
 }
