@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        transform.LookAt(target);
+      
     }
 
     void Atk()
@@ -68,6 +68,7 @@ public class Enemy : MonoBehaviour
 
         if(hp <= 0)
         {
+            BirdTarget.Instance.SetTarget();
             gameObject.SetActive(false);
         }
     }

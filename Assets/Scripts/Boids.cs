@@ -25,7 +25,7 @@ public class Boids : MonoBehaviour
 
     Vector3 resultVector;
 
-  
+    public WaitForSeconds wfs;
 
     private void Awake()
     {
@@ -34,7 +34,7 @@ public class Boids : MonoBehaviour
         sBoids = new List<Boids>();
         aBoids = new List<Boids>();
 
-       
+        wfs = new WaitForSeconds(Random.Range(0.03f, 0.1f));
     }
 
 
@@ -56,7 +56,7 @@ public class Boids : MonoBehaviour
                 float currentNeighbourDistanceSqr = Vector3.SqrMagnitude(bird.transform.position - transform.position);
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.cDistance * SpawnBirds.Instance.cDistance)
                 {
-                    if (cBoids.Count < 3)
+                    if (cBoids.Count < 5)
                     {
 
                         cBoids.Add(bird);
@@ -68,7 +68,7 @@ public class Boids : MonoBehaviour
                 }
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.sDistance * SpawnBirds.Instance.sDistance)
                 {
-                    if (sBoids.Count < 3)
+                    if (sBoids.Count < 5)
                     {
 
                         sBoids.Add(bird);
@@ -80,7 +80,7 @@ public class Boids : MonoBehaviour
                 }
                 if (currentNeighbourDistanceSqr <= SpawnBirds.Instance.aDistance * SpawnBirds.Instance.aDistance)
                 {
-                    if (aBoids.Count < 3)
+                    if (aBoids.Count < 5)
                     {
 
                         aBoids.Add(bird);
@@ -137,7 +137,7 @@ public class Boids : MonoBehaviour
     {
         while (true)
         {
-            yield return BirdStat.Instance.wfs;
+            yield return wfs;
             CalDistance();
 
         }

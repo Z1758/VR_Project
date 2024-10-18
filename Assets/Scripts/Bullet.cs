@@ -12,12 +12,14 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        transform.LookAt(target);
     }
 
     // Update is called once per frame
     void Update()
     {
         transform.position = Vector3.MoveTowards(transform.position, target.position + (Vector3.up*2), speed * Time.deltaTime);
+      
     }
 
     private void OnTriggerEnter(Collider other)

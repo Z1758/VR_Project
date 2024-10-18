@@ -9,7 +9,7 @@ public class BirdController : MonoBehaviour
 {
     [SerializeField] Transform target;
     [SerializeField] LayerMask wallMask;
-    [SerializeField] LayerMask enemyMask;
+  //  [SerializeField] LayerMask enemyMask;
     [SerializeField] Transform wall;
     [SerializeField] WaitForSeconds wfs = new WaitForSeconds (0.07f);
 
@@ -26,12 +26,14 @@ public class BirdController : MonoBehaviour
     {
 
         RaycastHit hit;
+        /*
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, enemyMask))
         {
 
             target.position = hit.transform.position;
             return;
         }
+        */
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, wallMask))
         {
 
@@ -70,7 +72,7 @@ public class BirdController : MonoBehaviour
             {
                 StopAllCoroutines();
                 co = StartCoroutine(BackCoroutine());
-
+           
 
             }
             else if (value.ReadValue<Vector2>().y < -0.1f)
