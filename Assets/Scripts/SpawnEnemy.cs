@@ -4,11 +4,38 @@ using UnityEngine;
 
 public class SpawnEnemy : MonoBehaviour
 {
-    public GameObject prefab;
+    private static SpawnEnemy instance;
+
+
+
+
+    public static SpawnEnemy Instance
+    {
+        get
+        {
+            return instance;
+
+        }
+    }
+
+
+    public GameObject[] prefab;
 
     Queue<GameObject> enemyQueue;
     [SerializeField] int enemyCount;
+    void Awake()
+    {
+        if (instance == null)
+        {
 
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+
+    }
     void Start()
     {
         enemyQueue = new Queue<GameObject>();
@@ -16,13 +43,15 @@ public class SpawnEnemy : MonoBehaviour
         StartCoroutine(Spawn());
     }
 
-  
+
 
     void SetEnemy()
     {
+        int ran;
         for (int i = 0; i < enemyCount; i++)
         {
-          GameObject enemy =  Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            ran = Random.Range(0, prefab.Length);
+            GameObject enemy = Instantiate(prefab[ran], Vector3.zero, Quaternion.identity);
             enemy.SetActive(false);
             enemyQueue.Enqueue(enemy);
         }
@@ -43,7 +72,13 @@ public class SpawnEnemy : MonoBehaviour
                 enemy.transform.position = vec;
                 enemy.SetActive(true);
             }
-            
+
         }
+    }
+
+    public void ReturnEnemy(GameObject enemy)
+    {
+        enemyQueue.Enqueue(enemy);
+        enemy.SetActive(false);
     }
 }

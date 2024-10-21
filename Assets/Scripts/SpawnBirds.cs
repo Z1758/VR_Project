@@ -81,6 +81,7 @@ public class SpawnBirds : MonoBehaviour
             ran = Random.Range(0, prefab.Length);
             
             GameObject bird = Instantiate(prefab[ran]);
+            bird.SetActive(false);
             Boids boid = bird.GetComponent<Boids>();
             if (bird.TryGetComponent(out Bird b))
             {
@@ -92,13 +93,16 @@ public class SpawnBirds : MonoBehaviour
         }
     }
 
-    void Spawn(int count)
+    public void Spawn(int count)
     {
 
  
         for (int i = 0; i < count; i++)
         {
-        
+
+            if (birdQueue.Count <= 0)
+                return;
+
             Vector3 pos = transform.position + Random.insideUnitSphere * spawnRadius;
             
             Boids boid = birdQueue.Dequeue();
@@ -111,5 +115,11 @@ public class SpawnBirds : MonoBehaviour
             allBoids.Add(boid);
             boid.gameObject.SetActive(true);
         }
+    }
+
+    public void ReturnBird(Boids bird)
+    {
+        birdQueue.Enqueue(bird);
+        bird.gameObject.SetActive(false);
     }
 }

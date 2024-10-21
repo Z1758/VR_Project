@@ -5,33 +5,32 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] EnemyStatus enemyStatus;
     [SerializeField] GameObject bullet;
     [SerializeField] Transform muzzle;
-    [SerializeField] private float maxHp;
-
-    public float MAXHP { get { return maxHp; } }
+    [SerializeField] Animator animator;
 
     [SerializeField] private float hp;
 
-    public float HP { get { return hp; } }
 
-    [SerializeField] float range;
-    [SerializeField] float speed;
     Transform target;
 
-    [SerializeField] float defaultCoolDown;
     [SerializeField] float coolDown;
+
+    bool animFlag;
 
     // Start is called before the first frame update
     void Start()
     {
+      animator = GetComponent<Animator>();
       target =  GameObject.FindGameObjectWithTag("Player").transform;
+      
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (range > transform.position.z)
+        if (enemyStatus.range > transform.position.z)
         {
 
             Move();
@@ -42,10 +41,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        hp = enemyStatus.hp;
+    }
 
     void Move()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target.position, enemyStatus.speed * Time.deltaTime);
       
     }
 
@@ -56,20 +59,38 @@ public class Enemy : MonoBehaviour
         if (coolDown <= 0)
         {
             Instantiate(bullet, muzzle.position, muzzle.rotation);
-            coolDown = defaultCoolDown;
+            coolDown = enemyStatus.cooltime;
         }
     }
 
     public void TakeDamage(int dmg)
     {
      
+        if (hp <= 0)
+            return;
 
         hp-=dmg;
 
-        if(hp <= 0)
+        if (!animFlag && hp < enemyStatus.hp * 0.5f)
         {
-            BirdTarget.Instance.SetTarget();
-            gameObject.SetActive(false);
+            animator.SetTrigger("Hit");
+            animFlag = true;
+
         }
+
+        if (hp <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Instantiate(enemyStatus.effect,transform.position, Quaternion.identity);
+        Player.Instance.PlusCount();
+        animFlag = false;
+        BirdTarget.Instance.SetTarget();
+
+        SpawnEnemy.Instance.ReturnEnemy(gameObject);
     }
 }

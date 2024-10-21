@@ -11,15 +11,13 @@ using UnityEngine.Jobs;
 
 public class Boids : MonoBehaviour
 {
+    [SerializeField] Bird bird;
+
     private List<Boids> cBoids;
     private List<Boids> sBoids;
     private List<Boids> aBoids;
 
-    [SerializeField] int hp;
-
     [SerializeField] float fovAngle;
-
-    [SerializeField] float speed;
 
     [SerializeField] LayerMask mask;
 
@@ -29,7 +27,7 @@ public class Boids : MonoBehaviour
 
     private void Awake()
     {
-
+        bird = GetComponent<Bird>();
         cBoids = new List<Boids>();
         sBoids = new List<Boids>();
         aBoids = new List<Boids>();
@@ -124,7 +122,7 @@ public class Boids : MonoBehaviour
         resultVector = resultVector.normalized;
 
         transform.rotation = Quaternion.LookRotation(resultVector);
-        transform.position += resultVector * BirdStat.Instance.SPEED * Time.deltaTime;
+        transform.position += resultVector * bird.status.speed * Time.deltaTime;
     }
 
     private void Start()
@@ -242,9 +240,9 @@ public class Boids : MonoBehaviour
 
     public void TakeDamage()
     {
-        hp--;
+        bird.HP--;
 
-        if (hp <= 0)
+        if (bird.HP <= 0)
         {
             Die();
         }
@@ -254,14 +252,21 @@ public class Boids : MonoBehaviour
     {
       
         StopAllCoroutines();
-        gameObject.SetActive(false);
+        SpawnBirds.Instance.ReturnBird(this);
+       
+    }
+
+    private void OnEnable()
+    {
+        bird.HP = bird.status.hp;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out Enemy enemy))
         {
-            enemy.TakeDamage(1);
+            enemy.TakeDamage(bird.status.attack);
+            TakeDamage();
         }
     }
 
