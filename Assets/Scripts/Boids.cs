@@ -252,7 +252,7 @@ public class Boids : MonoBehaviour
 
     public void Die()
     {
-        KillBird.Instance.Kill(transform.position);
+      
         StopAllCoroutines();
         gameObject.SetActive(false);
     }

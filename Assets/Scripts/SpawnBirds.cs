@@ -23,8 +23,8 @@ public class SpawnBirds : MonoBehaviour
 
     public GameObject[] prefab;
     public float spawnRadius = 7;
-    public int spawnCount;
-
+    [SerializeField] int birdCount;
+    Queue<Boids> birdQueue;
     public List<Boids> allBoids;
 
     [SerializeField] AnimationInstancing.AnimationInstancing[] proto;
@@ -65,13 +65,21 @@ public class SpawnBirds : MonoBehaviour
         }
 
         allBoids = new List<Boids>();
+        birdQueue = new Queue<Boids>();
 
+
+        SetBird();
+
+        Spawn(50);
+    }
+
+    void SetBird()
+    {
         int ran = 0;
-
-        for (int i = 0; i < spawnCount; i++)
+        for (int i = 0; i < birdCount; i++)
         {
             ran = Random.Range(0, prefab.Length);
-            Vector3 pos = transform.position + Random.insideUnitSphere * spawnRadius;
+            
             GameObject bird = Instantiate(prefab[ran]);
             Boids boid = bird.GetComponent<Boids>();
             if (bird.TryGetComponent(out Bird b))
@@ -80,13 +88,28 @@ public class SpawnBirds : MonoBehaviour
                 b.ani.playSpeed = Random.Range(0.5f, 1.5f);
             }
 
-         
+            birdQueue.Enqueue(boid);
+        }
+    }
+
+    void Spawn(int count)
+    {
+
+ 
+        for (int i = 0; i < count; i++)
+        {
+        
+            Vector3 pos = transform.position + Random.insideUnitSphere * spawnRadius;
+            
+            Boids boid = birdQueue.Dequeue();
+          
+
 
 
             boid.transform.position = pos;
             boid.transform.forward = Random.insideUnitSphere;
             allBoids.Add(boid);
+            boid.gameObject.SetActive(true);
         }
     }
-
 }
