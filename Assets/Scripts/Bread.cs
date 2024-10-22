@@ -8,7 +8,8 @@ public class Bread : MonoBehaviour
     Vector3 pos;
     Quaternion quaternion;
     [SerializeField] Rigidbody rb;
-
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip clip;
     public static Bread Instance
     {
         get
@@ -29,7 +30,7 @@ public class Bread : MonoBehaviour
         {
             Destroy(this);
         }
-
+        audioSource = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
         pos = transform.position;
         quaternion = transform.rotation;
     }
@@ -45,10 +46,10 @@ public class Bread : MonoBehaviour
             SetPos();
         }
 
-        if(transform.position.z < 56f)
+        if(transform.position.z < 57f)
         {
             rb.velocity = Vector3.zero;
-            
+            audioSource.PlayOneShot(clip);
             SpawnBirds.Instance.Spawn(10);
             gameObject.SetActive(false);
         }

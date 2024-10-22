@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpawnBirds : MonoBehaviour
 {
@@ -50,7 +51,7 @@ public class SpawnBirds : MonoBehaviour
     [Range(0f, 10f)]
     [SerializeField] public float bWeight;
 
-
+    [SerializeField] Text text;
 
     void Awake()
     {
@@ -115,11 +116,14 @@ public class SpawnBirds : MonoBehaviour
             allBoids.Add(boid);
             boid.gameObject.SetActive(true);
         }
+        text.text = allBoids.Count.ToString();
     }
 
     public void ReturnBird(Boids bird)
     {
         birdQueue.Enqueue(bird);
+        allBoids.Remove(bird);
         bird.gameObject.SetActive(false);
+        text.text = allBoids.Count.ToString();
     }
 }

@@ -21,6 +21,8 @@ public class SpawnEnemy : MonoBehaviour
 
     public GameObject[] prefab;
 
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip clip;
     Queue<GameObject> enemyQueue;
     [SerializeField] int enemyCount;
     void Awake()
@@ -35,6 +37,7 @@ public class SpawnEnemy : MonoBehaviour
             Destroy(this);
         }
 
+       audioSource = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
     }
     void Start()
     {
@@ -66,9 +69,9 @@ public class SpawnEnemy : MonoBehaviour
             {
                 GameObject enemy = enemyQueue.Dequeue();
                 Vector3 vec = transform.position;
-                vec.x += Random.Range(-15, 15);
+                vec.x += Random.Range(-12, 12);
                 vec.y += Random.Range(-3, 3);
-                vec.z += Random.Range(-10, 10);
+                vec.z += Random.Range(-7, 7);
                 enemy.transform.position = vec;
                 enemy.SetActive(true);
             }
@@ -78,6 +81,7 @@ public class SpawnEnemy : MonoBehaviour
 
     public void ReturnEnemy(GameObject enemy)
     {
+        audioSource.PlayOneShot(clip);
         enemyQueue.Enqueue(enemy);
         enemy.SetActive(false);
     }
